@@ -59,9 +59,8 @@ https://drive.google.com/file/d/1zaS422dwajUBTQgBu2CTW-4jAfbXg8Pb/view?usp=shari
 ## Enlaces de la simulacion de wokwi de personaje:
 https://wokwi.com/projects/413280381589960705
 
-## Video de funcionamiento en woki y prueba de personaje
-https://drive.google.com/file/d/1zaS422dwajUBTQgBu2CTW-4jAfbXg8Pb/view?usp=sharing
-
+## Video de funcionamiento en thony y prueba de personaje
+https://drive.google.com/drive/folders/14QFAoVQaWJC39RPKi_vWuITSN0kiWBNM
 
 ## Videos de practicas de clase
 https://drive.google.com/drive/folders/1fvg5iQsfrLAGnyksl76WLwoRzDL3q6rc?usp=drive_link
