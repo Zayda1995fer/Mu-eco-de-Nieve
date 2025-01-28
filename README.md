@@ -54,11 +54,41 @@ A continuación se presentan las evidencias del proyecto del muñeco de nieve qu
 https://drive.google.com/file/d/1zaS422dwajUBTQgBu2CTW-4jAfbXg8Pb/view?usp=sharing
 https://drive.google.com/file/d/1zaS422dwajUBTQgBu2CTW-4jAfbXg8Pb/view?usp=sharing
 
-*Descripción:* Enlace de la carpeta donde se encuentra el video de la explicacion de las funcionalidades del muñeco de niebe
+*Descripción:* Enlace de la carpeta donde se encuentra el video de la explicacion de las funcionalidades del muñeco de nieve
+
+## Enlaces de la simulacion de wokwi de personaje:
+https://wokwi.com/projects/413280381589960705
+
+## Video de funcionamiento en woki y prueba de personaje
+https://drive.google.com/file/d/1zaS422dwajUBTQgBu2CTW-4jAfbXg8Pb/view?usp=sharing
 
 
-### 3. Videos de las actividades de clase 
+## Videos de practicas de clase
+https://drive.google.com/drive/folders/1fvg5iQsfrLAGnyksl76WLwoRzDL3q6rc?usp=drive_link
 
-![Control de LEDs](./evidencias/control_leds.mp4)  
-*Descripción:* Video que muestra cómo se encienden y apagan los LEDs según las condiciones programadas.
+
+## Imagenes de Node-RED
+![image](https://github.com/user-attachments/assets/696236fe-7fb9-4b6b-bc76-5aa71a934f66)
+![image](https://github.com/user-attachments/assets/b64f709d-53ae-49cb-95aa-5f9f85241891)
+
+
+## Imagen de la captura de cursos de Phython 
+![Captura de pantalla (109)](https://github.com/user-attachments/assets/254ad026-e898-4774-aa53-eaf5618ef673)
+![Captura de pantalla (110)](https://github.com/user-attachments/assets/816f2a0e-5a2e-4965-b1fb-ab2eeec7ce9d)
+![Captura de pantalla (111)](https://github.com/user-attachments/assets/f0bf1b3a-08c0-42fe-a1f7-533185aba09a)
+![Captura de pantalla (112)](https://github.com/user-attachments/assets/4d11b467-d109-40ef-8444-dca320aaaa71)
+![Captura de pantalla (113)](https://github.com/user-attachments/assets/effc022e-4b8c-4c7e-9088-fd7693cb5b24)
+
+## Imagen de la captura de cursos de JavaScript
+![Captura de pantalla (115)](https://github.com/user-attachments/assets/c1dd9f4e-e187-44ad-8fcc-04cf4c28c89a)
+![Captura de pantalla (116)](https://github.com/user-attachments/assets/29f70991-9957-4f12-8e30-23554fc54655)
+![Captura de pantalla (117)](https://github.com/user-attachments/assets/dceb10d8-2b3d-42ed-bfa2-4c98930b42fb)
+![Captura de pantalla (118)](https://github.com/user-attachments/assets/5948b18c-8c0f-4185-829a-cb9c994172b6)
+![Captura de pantalla (119)](https://github.com/user-attachments/assets/79dece6c-ebe8-4942-8769-fe24ac6b5ea6)
+![Captura de pantalla (120)](https://github.com/user-attachments/assets/93ea95d5-4de3-4930-935a-97263cc30df1)
+
+
+
+
+
 
