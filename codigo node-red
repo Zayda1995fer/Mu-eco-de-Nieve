@@ -1,0 +1,176 @@
+
+import network
+from umqtt.simple import MQTTClient
+from machine import Pin, PWM, time_pulse_us
+from time import sleep
+
+# Propiedades para conectar a un cliente MQTT
+MQTT_BROKER = "broker.hivemq.com"
+MQTT_USER = ""
+MQTT_PASSWORD = ""
+MQTT_CLIENT_ID = "esp32_control"
+MQTT_TOPIC = "utng/arg/dht11"  #  distancia
+MQTT_LED_TOPIC = "utng/arg/led"  #control del LED
+MQTT_MUSIC_TOPIC = "utng/arg/music"  #  buzzer
+MQTT_SERVO_TOPIC = "utng/arg/servo"  # T servo
+MQTT_PORT = 1883
+
+# WiFi
+sta_if = None
+
+# Notas musicales 
+NOTES = {
+    "B0": 31,
+    "C1": 33, "D1": 37, "E1": 41, "F1": 44, "G1": 49, "A1": 55, "B1": 62,
+    "C2": 65, "D2": 73, "E2": 82, "F2": 87, "G2": 98, "A2": 110, "B2": 123,
+    "C3": 131, "D3": 147, "E3": 165, "F3": 175, "G3": 196, "A3": 220, "B3": 247,
+    "C4": 262, "D4": 294, "E4": 330, "F4": 349, "G4": 392, "A4": 440, "B4": 494,
+    "C5": 523, "D5": 587, "E5": 659, "F5": 698, "G5": 784, "A5": 880, "B5": 988,
+    "C6": 1047, "D6": 1175, "E6": 1319, "F6": 1397, "G6": 1568, "A6": 1760, "B6": 1976,
+    "C7": 2093, "D7": 2349, "E7": 2637, "F7": 2794, "G7": 3136, "A7": 3520, "B7": 3951,
+    "C8": 4186, "D8": 4699
+}
+
+# Melodía de "Jingle Bells" con las notas y duraciones
+melody = [
+    ("E4", 8), ("E4", 8), ("E4", 4), 
+    ("E4", 8), ("E4", 8), ("E4", 4), 
+    ("E4", 8), ("G4", 8), ("C4", 8), ("D4", 8), ("E4", 2),
+    ("F4", 8), ("F4", 8), ("F4", 8), ("F4", 8), ("F4", 8), ("E4", 8), ("E4", 8), 
+    ("E4", 8), ("E4", 8), ("D4", 8), ("D4", 8), ("E4", 8), ("D4", 4), ("G4", 4)
+]
+
+# Inicializar componentes
+led = Pin(19, Pin.OUT)
+led.value(0)
+buzzer = PWM(Pin(5))
+buzzer.duty(0)
+servo = PWM(Pin(21), freq=50)
+
+# Función para conectar a WiFi
+def conectar_wifi():
+    global sta_if
+    print("Conectando a WiFi...")
+    sta_if = network.WLAN(network.STA_IF)
+    sta_if.active(True)
+    sta_if.connect('UTNG_GUEST', 'R3d1nv1t4d0s#UT')  # Reemplaza con tu contraseña
+    while not sta_if.isconnected():
+        print(".", end="")
+        sleep(0.5)
+    print("\nWiFi Conectada!")
+
+# Función para medir distancia
+def medir_distancia():
+    trig = Pin(17, Pin.OUT)
+    echo = Pin(18, Pin.IN)
+    
+    trig.off()
+    sleep(0.002)
+    trig.on()
+    sleep(0.00001)
+    trig.off()
+
+    duracion = time_pulse_us(echo, 1, 30000)
+    if duracion <= 0:
+        return -1
+    return (duracion / 2) * 0.0343
+
+# Función para conectar al broker MQTT
+def conectar_mqtt():
+    try:
+        client = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER, port=MQTT_PORT,
+                            user=MQTT_USER, password=MQTT_PASSWORD)
+        client.connect()
+        print(f"Conectado a MQTT Broker: {MQTT_BROKER}")
+        return client
+    except Exception as e:
+        print(f"Error al conectar al broker MQTT: {e}")
+        return None
+
+# Función para manejar mensajes MQTT
+servo_activado = False
+def llegada_mensaje(topic, msg):
+    global servo_activado
+    print(f"Mensaje recibido -> Tópico: {topic.decode()}, Mensaje: {msg.decode()}")
+    
+    # Control del LED
+    if topic == MQTT_LED_TOPIC.encode():
+        led.value(1 if msg == b'true' else 0)
+    
+    # Control del buzzer (melodía)
+    elif topic == MQTT_MUSIC_TOPIC.encode():
+        if msg == b'true':
+            print("Reproduciendo melodía...")
+            for note, duration in melody:
+                buzzer.freq(NOTES[note])
+                buzzer.duty(512)
+                sleep(0.2 / duration)  # Tiempo reducido para acelerar
+                buzzer.duty(0)
+                sleep(0.05)
+        elif msg == b'false':
+            buzzer.duty(0)
+    
+    # Control del servo
+    elif topic == MQTT_SERVO_TOPIC.encode():
+        servo_activado = msg == b'true'
+
+# Función para movimiento continuo del servo
+def movimiento_continuo_servo():
+    global servo_activado
+    potencia = 60  # Puedes ajustar este valor de potencia (40 a 115)
+    
+    if servo_activado:
+        for angle in range(40, 100):  # Movimiento hacia adelante
+            duty = int(potencia + (angle / 180) * (115 - potencia))  # Ajuste de potencia
+            servo.duty(duty)
+            sleep(0.02)
+        for angle in range(100, 40, -1):  # Movimiento hacia atrás
+            duty = int(potencia + (angle / 180) * (115 - potencia))  # Ajuste de potencia
+            servo.duty(duty)
+            sleep(0.02)
+    else:
+        servo.duty(0)  # Apagar servo si no está activo
+
+
+# Subscripción a tópicos MQTT
+def subscribir(client):
+    client.set_callback(llegada_mensaje)
+    client.subscribe(MQTT_TOPIC)
+    client.subscribe(MQTT_LED_TOPIC)
+    client.subscribe(MQTT_MUSIC_TOPIC)
+    client.subscribe(MQTT_SERVO_TOPIC)
+    print("Subscripción completa.")
+
+# Conexión a WiFi y MQTT
+conectar_wifi()
+client = conectar_mqtt()
+if client:
+    subscribir(client)
+
+# Ciclo principal
+while True:
+    try:
+        # Verificar conexión WiFi
+        if not sta_if.isconnected():
+            print("Reconectando WiFi...")
+            conectar_wifi()
+
+        # Verificar conexión MQTT
+        if client:
+            client.check_msg()
+
+        # Medición de distancia
+        distancia = medir_distancia()
+        if distancia >= 0:
+            print(f"Distancia: {distancia} cm")
+            # Publicar la distancia en el tópico MQTT
+            client.publish(MQTT_TOPIC, str(distancia))
+        
+        # Mover el servo si está activado
+        movimiento_continuo_servo()
+        
+        sleep(1)
+
+    except Exception as e:
+        print(f"Error en el ciclo principal: {e}")
+        sleep(1)
